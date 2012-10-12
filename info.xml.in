@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module name="@PACKAGE@" version="@VERSION@" release="@RELEASE@" license="@LICENSE@">
+  <description lang="en">Installation of french translation of XUL Runtime</description>
+
+  <requires>
+    <installer version="1.1.0" comp="ge"/>
+    <module name="dynacase-offline-xulruntimes" />
+  </requires>
+
+  <parameters>
+    <param name="xulruntimes_url" label="XUL Runtimes download URL" type="text" default="http://ftp.dynacase.org/third-party/xul-runtime-fr.tar.gz" volatile="yes" onupgrade="W" />
+  </parameters>
+
+  <pre-install>
+    <check type="syscommand" command="gunzip" />
+    <check type="syscommand" command="tar" />
+  </pre-install>
+
+  <pre-upgrade>
+    <check type="syscommand" command="gunzip" />
+    <check type="syscommand" command="tar" />
+  </pre-upgrade>
+
+  <post-install>
+    <download href="@xulruntimes_url" action="programs/xulruntimes_install">
+    <label lang="en">Download and install XUL Runtimes</label></download>
+  </post-install>
+
+  <post-upgrade>
+    <download href="@xulruntimes_url" action="programs/xulruntimes_install">
+    <label lang="en">Download and upgrade XUL Runtimes</label></download>
+  </post-upgrade>
+</module>

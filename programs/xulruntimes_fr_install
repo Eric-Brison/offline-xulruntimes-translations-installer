@@ -1,0 +1,88 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Install XUL Runtimes archive into Dynacase context dir
+ *
+ * @author Anakeen 2011
+ * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
+ */
+
+$WIFF_ROOT = getenv('WIFF_ROOT');
+if( $WIFF_ROOT === false ) {
+  print sprintf("WIFF_ROOT environment variable is not set!\n");
+  exit(1);
+}
+
+$WIFF_CONTEXT_ROOT = getenv('WIFF_CONTEXT_ROOT');
+if( $WIFF_CONTEXT_ROOT === false ) {
+  print sprintf("WIFF_CONTEXT_ROOT environment variable is not set!\n");
+  exit(1);
+}
+
+set_include_path(get_include_path().PATH_SEPARATOR.$WIFF_ROOT.PATH_SEPARATOR."$WIFF_ROOT/include");
+
+include_once('WHAT/Lib.System.php');
+
+$translation = 'share/offline/xulapp/';
+
+$tgz = $argv[1];
+if( $tgz === null ) {
+  print sprintf("Missing XUL Runtimes Translation archive argument\n");
+  exit(1);
+}
+$tgz = realpath($tgz);
+if( ! is_file($tgz) ) {
+  print sprintf("XUL Runtimes Translation archive not found at '%s'\n", $tgz);
+  exit(1);
+}
+
+$tmpfile = LibSystem::tempnam(null, 'tgz');
+if( $tmpfile === false ) {
+  print sprintf("Could not create temporary file\n");
+  exit(1);
+}
+
+$tempdir = basename($tmpfile);
+$ret = mkdir($tempdir);
+if( $ret === false ) {
+  print sprintf("Could not create temporary directory '%s'\n", $tempdir);
+  @unlink($tmpfile);
+  exit(1);
+}
+
+$ret = false;
+
+// Unpack archive in tempdir
+$cmd = sprintf('tar -C %s -zxf %s > %s 2>&1', escapeshellarg($tempdir), escapeshellarg($tgz), escapeshellarg($tmpfile));
+system($cmd, $ret);
+@unlink($tmpfile);
+
+if( $ret !== 0 ) {
+  print sprintf("Error tar -C %s -zxf %s\n", escapeshellarg($tempdir), escapeshellarg($tgz));
+  exit(1);
+}
+
+if( ! is_dir($translation) ) {
+  $ret = mkdir($translation, 0777, true);
+  if( $ret === false ) {
+    print sprintf("Error creating directory '%s'.", $translation);
+    exit(1);
+  }
+  clearstatcache();
+}
+
+// Move temp files into dynacase-offline-xulruntimes
+$cmd = sprintf('tar -C %s -cf - . | tar -C %s -xf -', escapeshellarg($tempdir), escapeshellarg($translation));
+system($cmd, $ret);
+if( $ret !== 0 ) {
+  print sprintf("Error tar -C %s -cf - . | tar -C %s -xf -", escapeshellarg($tempdir), escapeshellarg($translation));
+  exit(1);
+}
+
+// Cleanup tempdir
+$cmd = sprintf('rm -Rf %s', escapeshellarg($tempdir));
+system($cmd , $ret);
+
+exit(0);
+
+?>
