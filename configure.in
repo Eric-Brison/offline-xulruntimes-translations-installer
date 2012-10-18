@@ -26,9 +26,6 @@ AC_MSG_NOTICE([PubRule located at $PUBRULE])
 AC_CONFIG_FILES(Makefile)
 AC_CONFIG_FILES(info.xml)
 
-for file in Apps/*/*_init.php.in; do
-    AC_CONFIG_FILES(${file%.in})
-done
 
 AC_OUTPUT
 
