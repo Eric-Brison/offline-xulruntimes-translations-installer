@@ -8,7 +8,7 @@
   </requires>
 
   <parameters>
-    <param name="xulruntimes_url" label="XUL Runtimes download URL" type="text" default="http://ftp.dynacase.org/third-party/xul-runtime-fr.tar.gz" volatile="yes" onupgrade="W" />
+    <param name="xulruntimes_fr_url" label="XUL Runtimes FR download URL" type="text" default="http://ftp.dynacase.org/third-party/xul-runtime-fr.tar.gz" volatile="yes" onupgrade="W" />
   </parameters>
 
   <pre-install>
@@ -22,12 +22,12 @@
   </pre-upgrade>
 
   <post-install>
-    <download href="@xulruntimes_url" action="programs/xulruntimes_install">
+    <download href="@xulruntimes_fr_url" action="programs/xulruntimes_fr_install">
     <label lang="en">Download and install XUL Runtimes</label></download>
   </post-install>
 
   <post-upgrade>
-    <download href="@xulruntimes_url" action="programs/xulruntimes_install">
+    <download href="@xulruntimes_fr_url" action="programs/xulruntimes_fr_install">
     <label lang="en">Download and upgrade XUL Runtimes</label></download>
   </post-upgrade>
 </module>
