@@ -24,7 +24,7 @@ DISTFILES += $(SUBDIR) \
 $(pubdir)/programs: $(pubdir)
 	mkdir -p $(pubdir)/programs
 
-$(pubdir)/programs/xulruntimes_install: programs/xulruntimes_fr_install $(pubdir)/programs
+$(pubdir)/programs/xulruntimes_fr_install: programs/xulruntimes_fr_install $(pubdir)/programs
 	cp $< $@
 
-publish: $(pubdir)/programs/xulruntimes_install
+publish: $(pubdir)/programs/xulruntimes_fr_install
