@@ -5,6 +5,10 @@ utildir = @PUBRULE@
 pubdir = @prefix@
 srcdir = @srcdir@
 appname = @PACKAGE@
+MAJOR = $(word 1, $(subst ., ,$(VERSION)))
+MINOR = $(word 2, $(subst ., ,$(VERSION)))
+XUL_VERSION = $(MAJOR).$(MINOR)
+SHELL = /bin/bash
 
 export pubdir utildir
 
@@ -21,6 +25,8 @@ include $(utildir)/PubRule
 DISTFILES += $(SUBDIR) \
             RELEASE VERSION
 
+.PHONY: translation-pack clean
+
 $(pubdir)/programs: $(pubdir)
 	mkdir -p $(pubdir)/programs
 
@@ -28,3 +34,20 @@ $(pubdir)/programs/xulruntimes_fr_install: programs/xulruntimes_fr_install $(pub
 	cp $< $@
 
 publish: $(pubdir)/programs/xulruntimes_fr_install
+
+xul-runtime-fr-$(XUL_VERSION):
+	mkdir -p $@
+
+xul-runtime-fr-$(XUL_VERSION)/chome/fr/local/fr: xul-runtime-fr-$(XUL_VERSION)
+	set -o pipefail
+	wget -O - http://download.cdn.mozilla.net/pub/mozilla.org/firefox/releases/26.0/linux-i686/xpi/fr.xpi \
+		| (cd $< && jar xf /dev/stdin)
+
+xul-runtime-fr-$(XUL_VERSION).tar.gz: xul-runtime-fr-$(XUL_VERSION) xul-runtime-fr-$(XUL_VERSION)/chome/fr/local/fr
+	tar -C $< -zcf $@ chrome/fr/locale/fr
+
+translation-pack: xul-runtime-fr-$(XUL_VERSION).tar.gz
+
+clean:
+	rm -Rf autom4te.cache/ xul-runtime-fr-$(XUL_VERSION)/
+	rm -f Makefile config.log config.status configure info.xml xul-runtime-fr-$(XUL_VERSION).tar.gz

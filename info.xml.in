@@ -8,7 +8,7 @@
   </requires>
 
   <parameters>
-    <param name="xulruntimes_fr_url" label="XUL Runtimes FR download URL" type="text" default="http://ftp.dynacase.org/third-party/xul-runtime-fr.tar.gz" volatile="yes" onupgrade="W" />
+    <param name="xulruntimes_fr_url" label="XUL Runtimes FR download URL" type="text" default="http://ftp.dynacase.org/third-party/xul-runtime-fr-26.0.tar.gz" volatile="yes" onupgrade="W" />
   </parameters>
 
   <pre-install>
